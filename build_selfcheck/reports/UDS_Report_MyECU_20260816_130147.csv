@@ -1,0 +1,5 @@
+TestID,Action,Session,DID,DID_Name,Request,Response,Expected,Actual,PassFail,Status,NRC,DurationMs,Notes,Error
+TC001,Session,Extended,,,10 03,50 03 00 32 01 F4,50 03,50 03 00 32 01 F4,PASS,OK,,0.00,Enter extended,
+TC002,Read,Extended,0xF190,VIN,22 F1 90,62 F1 90 56 49 4E 31 32 33 34 35 36 37 38 39 41 42 43 44,62 F1 90,62 F1 90 56 49 4E 31 32 33 34 35 36 37 38 39 41 42 43 44,PASS,OK,,0.00,Sample read,
+TC003,Write,Extended,0xF1A0,Coding,2E F1 A0 01 02 03,6E F1 A0,6E F1 A0,6E F1 A0,PASS,OK,,0.00,Sample write,
+TC004,Read,Extended,0xF1A0,Verify coding,22 F1 A0,62 F1 A0 01 02 03,62 F1 A0 01 02 03,62 F1 A0 01 02 03,PASS,OK,,0.00,Verify after write,
