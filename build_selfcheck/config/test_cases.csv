@@ -1,5 +1,0 @@
-testid,action,session,did,did_name,writedata,expected,compare,timeout_ms,notes
-TC001,Session,Extended,,,,50 03,startswith,,Enter extended
-TC002,Read,Extended,0xF190,VIN,,62 F1 90,startswith,1000,Sample read
-TC003,Write,Extended,0xF1A0,Coding,01 02 03,6E F1 A0,exact,1000,Sample write
-TC004,Read,Extended,0xF1A0,Verify coding,,62 F1 A0 01 02 03,exact,1000,Verify after write

@@ -1,0 +1,14 @@
+build/
+build_selfcheck/
+*.o
+*.exe
+*.obj
+*.dll
+reports/*.csv
+reports/*.xml
+!reports/.gitkeep
+.DS_Store
+*.user
+x64/
+Debug/
+Release/
