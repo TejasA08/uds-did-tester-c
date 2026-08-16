@@ -135,9 +135,9 @@ Copy `PCANBasic.dll` (x64) into `build\` if Windows cannot find it.
 
 ## 7. Configure your ECU
 
-Edit these two files (Notepad / Excel are fine):
+Edit **`config\test_cases.xlsx`** in Excel (two sheets):
 
-### `config\setup.csv`
+### Sheet `Setup`
 
 | Field | What to set |
 |--------|-------------|
@@ -152,35 +152,41 @@ Edit these two files (Notepad / Excel are fine):
 | `tester_present` | `yes` / `no` |
 | `ecu_name` | Name shown on the report |
 
-### `config\test_cases.csv`
+### Sheet `TestCases`
 
 Columns:
 
-```text
-testid,action,session,did,did_name,writedata,expected,compare,timeout_ms,notes
-```
+`TestID | Action | Session | DID | DID_Name | WriteData | Expected | Compare | TimeoutMs | Notes`
 
-Examples:
+Examples (one row per test):
 
-```text
-TC001,Session,Extended,,,,50 03,startswith,,Enter extended
-TC010,Read,Extended,0xF190,VIN,,62 F1 90,startswith,1000,Read VIN
-TC020,Write,Extended,0xF1A0,Coding,01 02 03,6E F1 A0,exact,1000,Write coding
-TC021,Read,Extended,0xF1A0,Verify,,62 F1 A0 01 02 03,exact,1000,Verify write
-```
+| TestID | Action | Session | DID | WriteData | Expected | Compare |
+|--------|--------|---------|-----|-----------|----------|---------|
+| TC001 | Session | Extended | | | 50 03 | startswith |
+| TC010 | Read | Extended | 0xF190 | | 62 F1 90 | startswith |
+| TC020 | Write | Extended | 0xF1A0 | 01 02 03 | 6E F1 A0 | exact |
+| TC021 | Read | Extended | 0xF1A0 | | 62 F1 A0 01 02 03 | exact |
 
 **Actions:** `Session` | `Read` | `Write`  
-**Sessions:** `Default` | `Extended` | `Programming` (or raw like `0x03`)  
+**Sessions:** `Default` | `Extended` | `Programming`  
 **Compare:** `exact` | `startswith` | `ignore_data`
 
 Tip for day one: start with **Read-only** rows. Add writes after reads look correct.
+
+If the xlsx is missing:
+
+```bat
+build\uds_tester.exe --create-config
+```
+
+(Legacy CSV via `--setup` / `--cases` still works, but Excel is the normal path.)
 
 ---
 
 ## 8. Run against the real ECU
 
 1. Peak connected, ECU powered, bitrate/IDs correct.
-2. `interface=pcan` in `setup.csv`.
+2. `interface=pcan` in `config\test_cases.xlsx` (Setup sheet).
 3. From project root:
 
 ```bat
@@ -224,7 +230,7 @@ If open fails with “busy” / init error, close Busmaster/PCAN-View and retry.
 
 ## Daily workflow (after first setup)
 
-1. Edit `config\test_cases.csv` (add/change DIDs).
+1. Edit `config\test_cases.xlsx` (Setup + TestCases sheets).
 2. Connect Peak + power ECU.
 3. Run `run.bat`.
 4. Open the newest file in `reports\`.
@@ -254,11 +260,11 @@ run.bat --mock
 :: Create/overwrite default CSVs
 build\uds_tester.exe --create-config
 
-:: Normal hardware run (after pcan build + setup.csv)
+:: Normal hardware run (after pcan build + Excel Setup sheet)
 run.bat
 
-:: Custom paths
-build\uds_tester.exe --setup config\setup.csv --cases config\test_cases.csv --reports reports
+:: Custom Excel config path
+build\uds_tester.exe --config config\test_cases.xlsx --reports reports
 ```
 
 ---

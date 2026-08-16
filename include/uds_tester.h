@@ -87,6 +87,11 @@ int load_setup_csv(const char *path, setup_config_t *setup);
 int load_test_cases_csv(const char *path, test_case_t *cases, size_t cap, size_t *count);
 int write_default_config(const char *setup_path, const char *cases_path);
 
+/* xlsx_config.c — Excel workbook with Setup + TestCases sheets */
+int load_config_xlsx(const char *path, setup_config_t *setup,
+                     test_case_t *cases, size_t cap, size_t *count);
+int write_default_xlsx(const char *path);
+
 /* bus */
 typedef struct uds_bus uds_bus_t;
 uds_bus_t *bus_open(const setup_config_t *setup);

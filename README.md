@@ -1,6 +1,6 @@
 # UDS DID Tester (C)
 
-Peak/PCAN UDS automation with CSV test config and Excel-compatible reports.
+Peak/PCAN UDS automation with Excel test config and Excel-compatible reports.
 
 ## Quick start (no hardware)
 
@@ -15,14 +15,15 @@ Windows (MinGW):
 run.bat --mock
 ```
 
+Edit tests in Excel: **`config/test_cases.xlsx`** (sheets **Setup** and **TestCases**).
+
 ## Real Peak hardware (Windows)
 
 1. Install PEAK drivers + **PCAN-Basic** API.
-2. Edit `config/setup.csv`:
-   - `interface` = `pcan`
-   - `request_id` / `response_id` / `bitrate` / `peak_channel`
-3. Edit `config/test_cases.csv` with your DID rows.
-4. Build with PCAN:
+2. Edit `config/test_cases.xlsx`:
+   - Sheet **Setup**: `interface` = `pcan`, plus IDs / bitrate / channel
+   - Sheet **TestCases**: your DID rows
+3. Build with PCAN:
 
 ```bat
 make pcan PCAN_SDK="C:\Program Files\PEAK-System\PCAN-Basic API"
@@ -30,7 +31,7 @@ make pcan PCAN_SDK="C:\Program Files\PEAK-System\PCAN-Basic API"
 
 Or with MinGW after adjusting include/lib paths, define `UDS_HAS_PCAN` and link `PCANBasic`.
 
-5. Run:
+4. Run:
 
 ```bat
 run.bat
@@ -48,5 +49,6 @@ Optional: run Busmaster alongside this tool to watch CAN traffic. This executabl
 
 - `src/` — C sources
 - `include/uds_tester.h` — shared types
-- `config/` — setup + test cases CSV
+- `config/test_cases.xlsx` — Setup + TestCases (edit in Excel)
+- `templates/test_cases.xlsx` — template used by `--create-config`
 - `reports/` — generated outputs
