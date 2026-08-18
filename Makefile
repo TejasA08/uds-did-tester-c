@@ -1,5 +1,5 @@
 CC ?= gcc
-CFLAGS ?= -std=c11 -Wall -Wextra -O2 -Iinclude -Ithird_party/miniz
+CFLAGS ?= -O2 -Wall -Iinclude -Ithird_party/miniz
 LDFLAGS ?=
 
 APP_SRC = \

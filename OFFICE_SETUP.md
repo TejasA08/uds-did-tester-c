@@ -252,7 +252,8 @@ If open fails with “busy” / init error, close Busmaster/PCAN-View and retry.
 
 | Symptom | What to check |
 |---------|----------------|
-| `gcc not found` | Install MinGW and add to PATH, or use VS `cl` |
+| `gcc not found` | Install MinGW-w64 and add to PATH, or use VS `cl` |
+| `unknown C standard c11` / `unrecognized -Wextra` | Old MinGW — pull latest repo (`run.bat` uses older-friendly flags), or install **MinGW-w64** |
 | No `uds_tester.exe` after clone | Expected — run `run.bat` once to build it (see FAQ below) |
 | `CAN_Initialize failed` | Channel name, drivers, cable, another app holding Peak |
 | Timeouts on every request | `request_id` / `response_id`, bitrate, ECU power, ISO-TP addressing |
