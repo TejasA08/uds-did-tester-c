@@ -1,5 +1,5 @@
 CC ?= gcc
-CFLAGS ?= -O2 -Wall -Iinclude -Ithird_party/miniz
+CFLAGS ?= -std=gnu99 -O2 -Wall -Iinclude -Ithird_party/miniz -D_ftelli64=ftell -D_fseeki64=fseek
 LDFLAGS ?=
 
 APP_SRC = \

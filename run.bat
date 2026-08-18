@@ -14,8 +14,8 @@ if not exist config mkdir config
 if not exist reports mkdir reports
 
 echo Building...
-rem Use conservative flags for older office MinGW (no -std=c11 / -Wextra).
-gcc -O2 -Wall -Iinclude -Ithird_party/miniz -o build\uds_tester.exe ^
+rem -std=gnu99 required: old MinGW defaults to C89 and rejects for(int i=...)
+gcc -std=gnu99 -O2 -Wall -Iinclude -Ithird_party/miniz -D_ftelli64=ftell -D_fseeki64=fseek -o build\uds_tester.exe ^
   src\main.c src\hexutil.c src\config_csv.c src\xlsx_config.c src\bus.c src\isotp.c src\pcan_bus.c src\runner.c src\report.c ^
   third_party\miniz\miniz.c third_party\miniz\miniz_tdef.c third_party\miniz\miniz_tinfl.c third_party\miniz\miniz_zip.c
 if errorlevel 1 (

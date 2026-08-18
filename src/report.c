@@ -41,13 +41,12 @@ static void xml_escape(const char *in, char *out, size_t cap) {
 
 static void stamp(char *buf, size_t cap) {
     time_t t = time(NULL);
-    struct tm tm_buf;
-#ifdef _WIN32
-    localtime_s(&tm_buf, &t);
-#else
-    localtime_r(&t, &tm_buf);
-#endif
-    strftime(buf, cap, "%Y%m%d_%H%M%S", &tm_buf);
+    struct tm *tm_ptr = localtime(&t);
+    if (!tm_ptr) {
+        snprintf(buf, cap, "unknown");
+        return;
+    }
+    strftime(buf, cap, "%Y%m%d_%H%M%S", tm_ptr);
 }
 
 int write_reports(const char *reports_dir, const setup_config_t *setup,

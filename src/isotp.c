@@ -7,7 +7,7 @@
 #ifdef _WIN32
 #include <windows.h>
 static void sleep_ms(unsigned ms) { Sleep(ms); }
-static uint64_t now_ms(void) { return GetTickCount64(); }
+static uint64_t now_ms(void) { return (uint64_t)GetTickCount(); }
 #else
 #include <sys/time.h>
 #include <unistd.h>
