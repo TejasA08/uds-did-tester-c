@@ -17,6 +17,8 @@ run.bat --mock
 
 Edit tests in Excel: **`config/test_cases.xlsx`** (sheets **Setup** and **TestCases**).
 
+> **Note:** `uds_tester.exe` is **not** in the repo. Run `run.bat` (or `run.bat --mock`) once to build it into `build\`.
+
 ## Real Peak hardware (Windows)
 
 1. Install PEAK drivers + **PCAN-Basic** API.

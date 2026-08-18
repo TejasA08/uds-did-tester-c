@@ -1,4 +1,5 @@
-build/
+build/*
+!build/.gitkeep
 build_selfcheck/
 *.o
 *.exe

@@ -5,7 +5,18 @@ No Python required.
 
 ---
 
-## What you need (one-time)
+## Important: `uds_tester.exe` is not in Git
+
+After cloning you will **not** see `build\uds_tester.exe`. That is normal.
+
+The executable is **built on your laptop** the first time you run:
+
+```bat
+run.bat --mock
+```
+
+See the FAQ at the end of this file for details.
+
 
 | Item | Why | Notes |
 |------|-----|--------|
@@ -242,22 +253,24 @@ If open fails with “busy” / init error, close Busmaster/PCAN-View and retry.
 | Symptom | What to check |
 |---------|----------------|
 | `gcc not found` | Install MinGW and add to PATH, or use VS `cl` |
+| No `uds_tester.exe` after clone | Expected — run `run.bat` once to build it (see FAQ below) |
 | `CAN_Initialize failed` | Channel name, drivers, cable, another app holding Peak |
 | Timeouts on every request | `request_id` / `response_id`, bitrate, ECU power, ISO-TP addressing |
 | NRC in report | Expected — ECU rejected the service; check session/DID/support |
 | `interface=pcan` but “PCAN support was not compiled in” | Rebuild with `UDS_HAS_PCAN` + link `PCANBasic` (§6) |
-| Mock works, Peak fails | Config/hardware issue, not the test CSV logic |
+| Mock works, Peak fails | Config/hardware issue, not the Excel test logic |
 | Excel won’t open XML | Use the `.csv` report instead |
+| `PCANBasic.dll` not found | Copy x64 DLL next to `build\uds_tester.exe` |
 
 ---
 
 ## Quick command cheat sheet
 
 ```bat
-:: Offline proof
+:: Offline proof (also builds the .exe the first time)
 run.bat --mock
 
-:: Create/overwrite default CSVs
+:: Create/overwrite default Excel config from template
 build\uds_tester.exe --create-config
 
 :: Normal hardware run (after pcan build + Excel Setup sheet)
@@ -272,7 +285,7 @@ build\uds_tester.exe --config config\test_cases.xlsx --reports reports
 ## Security / IT notes
 
 - No Python install required.
-- Tool is a local `.exe` + CSV config; it does not need internet to run tests.
+- Tool is built locally to `build\uds_tester.exe`; Excel config is `config\test_cases.xlsx`.
 - Keep the GitHub repo **private**; do not commit customer DID dumps or vehicle secrets into git.
 - Prefer Read-only tests first on real ECUs.
 
@@ -281,3 +294,87 @@ build\uds_tester.exe --config config\test_cases.xlsx --reports reports
 ## Repo
 
 https://github.com/TejasA08/uds-did-tester-c
+
+---
+
+## FAQ — office setup notes (18 Aug 2026)
+
+### Why is `uds_tester.exe` missing after `git clone`?
+
+That is **intentional**.
+
+- The repo stores **source code + Excel template + docs**, not a Windows binary.
+- `build/` and `*.exe` are in `.gitignore` so each PC builds its own executable.
+- A Mac/Linux build cannot produce a valid Windows `.exe` for your office laptop.
+
+**What to do:** from the cloned folder, run:
+
+```bat
+run.bat --mock
+```
+
+`run.bat` will compile and create:
+
+```text
+uds-did-tester-c\build\uds_tester.exe
+```
+
+After that, the file will be there locally (still not uploaded to GitHub).
+
+### What files must be in the repo? (already included)
+
+| Path | Purpose |
+|------|---------|
+| `src/`, `include/` | C source |
+| `third_party/miniz/` | Excel `.xlsx` reader support |
+| `config/test_cases.xlsx` | Your editable Setup + TestCases workbook |
+| `templates/test_cases.xlsx` | Template for `--create-config` |
+| `run.bat` / `Makefile` | Build + run helpers |
+| `OFFICE_SETUP.md` | This guide |
+| `build/.gitkeep` | Keeps empty `build\` folder placeholder |
+
+You do **not** need `uds_tester.exe` in Git to set up the project.
+
+### Step 4 — where do PCAN-Basic files go?
+
+Install **PCAN-Basic** with the PEAK installer. Do **not** dump the whole SDK into the git repo.
+
+Typical install location:
+
+```text
+C:\Program Files\PEAK-System\PCAN-Basic API\
+  Include\PCANBasic.h          ← used when compiling
+  x64\VC_LIB\PCANBasic.lib      ← used when linking
+  (somewhere)\PCANBasic.dll    ← needed when running
+```
+
+| File | Where it stays |
+|------|----------------|
+| `PCANBasic.h` | PEAK install `Include\` (referenced by `PCAN_SDK` at build time) |
+| `PCANBasic.lib` | PEAK install `x64\VC_LIB\` (linked at build time) |
+| `PCANBasic.dll` (x64) | On PATH from install, **or copy next to** `build\uds_tester.exe` |
+
+Build example:
+
+```bat
+make PCAN_SDK="C:\Program Files\PEAK-System\PCAN-Basic API"
+```
+
+If Windows says the DLL is missing when you run the tool, copy **only** `PCANBasic.dll` into:
+
+```text
+uds-did-tester-c\build\PCANBasic.dll
+```
+
+### Clone → first successful mock run (short path)
+
+1. `cd` into `uds-did-tester-c`
+2. Install MinGW (`gcc --version` works) **or** use VS Build Tools
+3. Run `run.bat --mock`
+4. Confirm PASS lines and new files under `reports\`
+5. Open `config\test_cases.xlsx` and edit **Setup** + **TestCases**
+6. For real Peak: install PCAN-Basic, rebuild with `UDS_HAS_PCAN`, set `interface=pcan`, run `run.bat`
+
+### Busmaster / PCAN-View tip
+
+Often **only one app** can open the Peak channel. If `CAN_Initialize` fails, close Busmaster/PCAN-View and retry.
